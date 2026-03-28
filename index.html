@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VisualWatch | Celestial Love</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #ff3366;
+            --secondary: #ff85a2;
+            --glass: rgba(255, 255, 255, 0.12);
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(to bottom, #ff4e50, #fc913a); 
+            overflow: hidden;
+            color: white;
+        }
+
+        /* Header & Footer */
+        header {
+            position: absolute;
+            top: 20px;
+            left: 30px;
+            font-size: 1.5rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            color: #fff;
+            text-shadow: 0 0 10px rgba(255,255,255,0.5);
+        }
+
+        footer {
+            position: absolute;
+            bottom: 15px;
+            width: 100%;
+            text-align: center;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            opacity: 0.8;
+        }
+
+        /* Background Romantic Message */
+        .bg-text {
+            position: absolute;
+            font-family: 'Dancing Script', cursive;
+            font-size: 4vw;
+            color: rgba(255, 255, 255, 0.08);
+            z-index: -1;
+            white-space: nowrap;
+            animation: drift 30s linear infinite;
+        }
+
+        @keyframes drift {
+            from { transform: translateX(100%); }
+            to { transform: translateX(-100%); }
+        }
+
+        /* Heart Rain Animation */
+        .heart {
+            position: absolute;
+            color: var(--primary);
+            font-size: 1.5rem;
+            pointer-events: none;
+            z-index: 1;
+            animation: fall linear forwards;
+        }
+
+        @keyframes fall {
+            to { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* Main Card */
+        .container {
+            position: relative;
+            z-index: 10;
+            background: var(--glass);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            padding: 50px 40px;
+            border-radius: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+            width: 85%;
+            max-width: 420px;
+            text-align: center;
+        }
+
+        h1 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 3rem;
+            margin-bottom: 30px;
+            background: linear-gradient(to right, #fff, #ff85a2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        input {
+            width: 100%;
+            padding: 15px 0;
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            font-size: 1.1rem;
+            outline: none;
+            margin-bottom: 20px;
+            transition: 0.4s;
+            text-align: center;
+        }
+
+        input:focus { border-bottom-color: var(--primary); }
+
+        button {
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            border: none;
+            padding: 15px 45px;
+            border-radius: 50px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 10px 20px rgba(255, 51, 102, 0.3);
+        }
+
+        button:hover { transform: scale(1.05); box-shadow: 0 15px 30px rgba(255, 51, 102, 0.5); }
+
+        #result { margin-top: 30px; min-height: 150px; }
+
+        .percent { font-size: 4rem; font-weight: 700; color: #ffeb3b; display: block; }
+
+        .love-msg {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.6rem;
+            margin-top: 15px;
+            color: #fff;
+            animation: fadeIn 1s ease-in;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    </style>
+</head>
+<body>
+
+    <header>VisualWatch</header>
+    
+    <div class="bg-text">"Love is not about the days you meet, but how you feel every day..."</div>
+
+    <div class="container">
+        <h1>Love Bond</h1>
+        <input type="text" id="name1" placeholder="Your Name" spellcheck="false">
+        <input type="text" id="name2" placeholder="Your Partner Name" spellcheck="false">
+        <br>
+        <button onclick="calculateLove()">Calculate Aura</button>
+
+        <div id="result"></div>
+    </div>
+
+    <footer>CREATED BY SAKIB</footer>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
+        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAjqOpOI-efujOP2HMVgxJfKGSo-7E3SwE",
+            authDomain: "lovecalculator-6fb53.firebaseapp.com",
+            projectId: "lovecalculator-6fb53",
+            storageBucket: "lovecalculator-6fb53.firebasestorage.app",
+            messagingSenderId: "578653650451",
+            appId: "1:578653650451:web:db9675623bc101e33b89e6",
+            measurementId: "G-1CHHB8Y6QP"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // ❤️ Heart Rain
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            heart.innerHTML = '❤️';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = (Math.random() * 2 + 3) + 's';
+            heart.style.opacity = Math.random();
+            heart.style.fontSize = (Math.random() * 20 + 20) + "px";
+            document.body.appendChild(heart);
+            setTimeout(() => heart.remove(), 5000);
+        }
+
+        function startHeartRain() {
+            for(let i=0;i<40;i++) {
+                setTimeout(createHeart, i*150);
+            }
+        }
+
+        // 💖 Main Function
+        window.calculateLove = async function () {
+            let n1 = document.getElementById("name1").value.trim();
+            let n2 = document.getElementById("name2").value.trim();
+
+            if(!n1 || !n2) { alert("Please enter both names to see the magic!"); return; }
+
+            // Consistent Hash
+            let combined = [n1.toLowerCase(), n2.toLowerCase()].sort().join("");
+            let hash = 0;
+            for(let i=0;i<combined.length;i++){ hash += combined.charCodeAt(i)*(i+1); }
+            let percent = (hash % 61)+40; // 40-100%
+
+            const resDiv = document.getElementById("result");
+            resDiv.innerHTML = `<span class="percent" id="num">0%</span>`;
+
+            // Count up
+            let current = 0;
+            let timer = setInterval(()=>{
+                if(current >= percent){
+                    clearInterval(timer);
+                    showFinalMessage(percent);
+                    startHeartRain();
+                } else {
+                    current++;
+                    document.getElementById("num").innerText = current + "%";
+                }
+            },30);
+
+            // Save to Firebase
+            try{
+                await addDoc(collection(db,"loveData"),{
+                    yourName:n1, partnerName:n2, lovePercent:percent, time:new Date()
+                });
+            }catch(e){console.error(e);}
+        }
+
+        function showFinalMessage(percent){
+            let msg="";
+            if(percent>90) msg="A match made in Heaven! 🌌";
+            else if(percent>75) msg="Beautiful Connection! ✨";
+            else if(percent>60) msg="A Strong Romantic Spark! 🔥";
+            else msg="Deep Potential for Love! 🌱";
+
+            const msgElement = document.createElement("div");
+            msgElement.className="love-msg";
+            msgElement.innerText = msg;
+            document.getElementById("result").appendChild(msgElement);
+
+            // Additional floating hearts
+            for(let i=0;i<20;i++){ setTimeout(createHeart,i*200); }
+        }
+    </script>
+</body>
+</html>
