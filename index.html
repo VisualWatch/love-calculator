@@ -2,173 +2,556 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VisualWatch | Celestial Love</title>
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Eternal Bond | ACCELERIN Love Nexus</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&family=Playfair+Display:wght@400;700;900&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        :root {
-            --primary: #ff3366;
-            --secondary: #ff85a2;
-            --glass: rgba(255, 255, 255, 0.12);
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
         body {
-            margin: 0;
-            padding: 0;
             font-family: 'Poppins', sans-serif;
-            height: 100vh;
+            min-height: 100vh;
+            background: #0a0f1e;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* 3D Animated Background */
+        .galaxy-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            background: radial-gradient(ellipse at center, #1a1f2e 0%, #0a0a1a 100%);
+        }
+
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        .nebula {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 30% 40%, rgba(255,51,102,0.15) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 60%, rgba(103,58,183,0.15) 0%, transparent 50%);
+            z-index: -1;
+            animation: nebulaMove 20s ease-in-out infinite;
+        }
+
+        @keyframes nebulaMove {
+            0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.5; }
+            50% { transform: scale(1.1) rotate(2deg); opacity: 0.8; }
+        }
+
+        /* Live Header - Neon Cyber Style */
+        .live-header {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            background: rgba(10, 15, 30, 0.6);
+            backdrop-filter: blur(20px);
+            border-radius: 60px;
+            padding: 12px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            z-index: 1000;
+            border: 1px solid rgba(255, 51, 102, 0.4);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3), 0 0 20px rgba(255,51,102,0.2);
+            animation: headerGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes headerGlow {
+            0%, 100% { border-color: rgba(255,51,102,0.4); box-shadow: 0 0 20px rgba(255,51,102,0.2); }
+            50% { border-color: rgba(255,133,162,0.8); box-shadow: 0 0 35px rgba(255,51,102,0.5); }
+        }
+
+        .header-live-icon {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,51,102,0.2);
+            padding: 5px 15px;
+            border-radius: 40px;
+            animation: pulseLive 1.5s infinite;
+        }
+
+        @keyframes pulseLive {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(255,51,102,0.4); }
+            50% { box-shadow: 0 0 0 8px rgba(255,51,102,0); }
+        }
+
+        .live-dot {
+            width: 10px;
+            height: 10px;
+            background: #ff3366;
+            border-radius: 50%;
+            animation: blinkLive 1s infinite;
+        }
+
+        @keyframes blinkLive {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .brand-neon {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.6rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #fff, #ff3366, #ff85a2);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: 2px;
+        }
+
+        .accelerin-live {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, rgba(255,51,102,0.2), rgba(103,58,183,0.2));
+            padding: 8px 20px;
+            border-radius: 50px;
+            border: 1px solid rgba(255,51,102,0.5);
+        }
+
+        /* Main Card - Crystal Design */
+        .main-container {
             display: flex;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(to bottom, #ff4e50, #fc913a); 
-            overflow: hidden;
-            color: white;
-        }
-
-        /* Header & Footer */
-        header {
-            position: absolute;
-            top: 20px;
-            left: 30px;
-            font-size: 1.5rem;
-            font-weight: 600;
-            letter-spacing: 2px;
-            color: #fff;
-            text-shadow: 0 0 10px rgba(255,255,255,0.5);
-        }
-
-        footer {
-            position: absolute;
-            bottom: 15px;
-            width: 100%;
-            text-align: center;
-            font-size: 0.9rem;
-            letter-spacing: 2px;
-            opacity: 0.8;
-        }
-
-        /* Background Romantic Message */
-        .bg-text {
-            position: absolute;
-            font-family: 'Dancing Script', cursive;
-            font-size: 4vw;
-            color: rgba(255, 255, 255, 0.08);
-            z-index: -1;
-            white-space: nowrap;
-            animation: drift 30s linear infinite;
-        }
-
-        @keyframes drift {
-            from { transform: translateX(100%); }
-            to { transform: translateX(-100%); }
-        }
-
-        /* Heart Rain Animation */
-        .heart {
-            position: absolute;
-            color: var(--primary);
-            font-size: 1.5rem;
-            pointer-events: none;
-            z-index: 1;
-            animation: fall linear forwards;
-        }
-
-        @keyframes fall {
-            to { transform: translateY(110vh) rotate(360deg); opacity: 0; }
-        }
-
-        /* Main Card */
-        .container {
+            min-height: 100vh;
+            padding: 120px 20px 100px;
             position: relative;
             z-index: 10;
-            background: var(--glass);
+        }
+
+        .crystal-card {
+            background: rgba(20, 25, 45, 0.5);
             backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            padding: 50px 40px;
-            border-radius: 40px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
-            width: 85%;
-            max-width: 420px;
-            text-align: center;
+            border-radius: 70px;
+            padding: 50px 45px;
+            width: 100%;
+            max-width: 550px;
+            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .crystal-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%);
+            animation: rotateShine 20s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes rotateShine {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Cosmic Love Orb */
+        .love-orb {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 20px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .orb-core {
+            width: 70px;
+            height: 70px;
+            background: radial-gradient(circle, #ff3366, #ff85a2);
+            border-radius: 50%;
+            box-shadow: 0 0 40px #ff3366;
+            animation: orbPulse 1.5s ease-in-out infinite;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 35px;
+        }
+
+        @keyframes orbPulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 30px #ff3366; }
+            50% { transform: scale(1.1); box-shadow: 0 0 60px #ff85a2; }
+        }
+
+        .orb-ring {
+            position: absolute;
+            width: 110px;
+            height: 110px;
+            border: 2px solid rgba(255,51,102,0.6);
+            border-radius: 50%;
+            animation: ringSpin 8s linear infinite;
+        }
+
+        .orb-ring2 {
+            width: 130px;
+            height: 130px;
+            border: 1px solid rgba(255,133,162,0.4);
+            animation: ringSpinReverse 12s linear infinite;
+        }
+
+        @keyframes ringSpin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes ringSpinReverse {
+            from { transform: rotate(360deg); }
+            to { transform: rotate(0deg); }
         }
 
         h1 {
-            font-family: 'Dancing Script', cursive;
-            font-size: 3rem;
-            margin-bottom: 30px;
-            background: linear-gradient(to right, #fff, #ff85a2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        input {
-            width: 100%;
-            padding: 15px 0;
-            background: transparent;
-            border: none;
-            border-bottom: 2px solid rgba(255, 255, 255, 0.3);
-            color: white;
-            font-size: 1.1rem;
-            outline: none;
-            margin-bottom: 20px;
-            transition: 0.4s;
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
             text-align: center;
+            background: linear-gradient(135deg, #fff, #ff85a2);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 10px;
         }
 
-        input:focus { border-bottom-color: var(--primary); }
+        .tagline {
+            text-align: center;
+            color: rgba(255,255,255,0.7);
+            font-size: 0.85rem;
+            letter-spacing: 2px;
+            margin-bottom: 35px;
+        }
 
-        button {
-            background: linear-gradient(45deg, var(--primary), var(--secondary));
-            border: none;
-            padding: 15px 45px;
+        /* Input Fields - Floating Style */
+        .floating-input {
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        .floating-input i {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.2rem;
+            color: #ff85a2;
+            z-index: 2;
+        }
+
+        .floating-input input {
+            width: 100%;
+            padding: 18px 20px 18px 55px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.2);
             border-radius: 50px;
             color: white;
-            font-weight: 600;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .floating-input input:focus {
+            border-color: #ff3366;
+            background: rgba(255,51,102,0.1);
+            box-shadow: 0 0 20px rgba(255,51,102,0.3);
+        }
+
+        .floating-input label {
+            position: absolute;
+            left: 55px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255,255,255,0.5);
+            transition: 0.3s;
+            pointer-events: none;
+        }
+
+        .floating-input input:focus + label,
+        .floating-input input:not(:placeholder-shown) + label {
+            top: 0;
+            font-size: 0.7rem;
+            background: #0a0f1e;
+            padding: 0 8px;
+            border-radius: 20px;
+            color: #ff85a2;
+        }
+
+        /* Calculate Button - Holographic */
+        .holographic-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(95deg, #ff3366, #ff85a2, #ff3366);
+            background-size: 200% 100%;
+            border: none;
+            border-radius: 60px;
+            color: white;
+            font-weight: 700;
+            font-size: 1.1rem;
             cursor: pointer;
             transition: 0.3s;
-            box-shadow: 0 10px 20px rgba(255, 51, 102, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            animation: gradientShift 3s ease infinite;
         }
 
-        button:hover { transform: scale(1.05); box-shadow: 0 15px 30px rgba(255, 51, 102, 0.5); }
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
 
-        #result { margin-top: 30px; min-height: 150px; }
+        .holographic-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(255,51,102,0.4);
+        }
 
-        .percent { font-size: 4rem; font-weight: 700; color: #ffeb3b; display: block; }
+        /* Result Area - Cosmic Display */
+        .cosmic-result {
+            margin-top: 35px;
+            text-align: center;
+            display: none;
+        }
 
-        .love-msg {
-            font-family: 'Dancing Script', cursive;
-            font-size: 1.6rem;
+        .energy-meter {
+            background: rgba(0,0,0,0.5);
+            border-radius: 50px;
+            padding: 20px;
+            margin-top: 20px;
+            border: 1px solid rgba(255,51,102,0.3);
+        }
+
+        .percent-value {
+            font-size: 4rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ffeb3b, #ff85a2);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-family: 'Orbitron', monospace;
+        }
+
+        .love-quote {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
             margin-top: 15px;
-            color: #fff;
-            animation: fadeIn 1s ease-in;
+            color: rgba(255,255,255,0.9);
+            line-height: 1.6;
         }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        /* Live Footer - Dynamic */
+        .live-footer {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            background: rgba(10, 15, 30, 0.6);
+            backdrop-filter: blur(20px);
+            border-radius: 60px;
+            padding: 12px 25px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 35px;
+            flex-wrap: wrap;
+            z-index: 1000;
+            border: 1px solid rgba(255,133,162,0.4);
+            animation: footerGlow 3s ease-in-out infinite;
+        }
 
+        @keyframes footerGlow {
+            0%, 100% { border-color: rgba(255,133,162,0.4); }
+            50% { border-color: rgba(255,51,102,0.7); }
+        }
+
+        .footer-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.8);
+        }
+
+        .footer-item i {
+            font-size: 1rem;
+            animation: iconFloat 2s ease-in-out infinite;
+        }
+
+        @keyframes iconFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-3px); }
+        }
+
+        .creator-name {
+            background: linear-gradient(135deg, #ff85a2, #ff3366);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 700;
+        }
+
+        .powered-dna {
+            font-weight: 800;
+            background: linear-gradient(135deg, #FFD166, #FF6B6B, #C084FC);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: 1px;
+        }
+
+        /* Floating Hearts */
+        .floating-heart {
+            position: fixed;
+            pointer-events: none;
+            font-size: 20px;
+            animation: floatHeart 6s ease-out forwards;
+            z-index: 999;
+        }
+
+        @keyframes floatHeart {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-20vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        @media (max-width: 550px) {
+            .live-header { top: 10px; left: 10px; right: 10px; padding: 10px 18px; }
+            .brand-neon { font-size: 1.1rem; }
+            .crystal-card { padding: 35px 25px; }
+            h1 { font-size: 1.8rem; }
+            .live-footer { bottom: 10px; left: 10px; right: 10px; gap: 15px; padding: 10px 18px; }
+            .footer-item { font-size: 0.7rem; }
+        }
     </style>
 </head>
 <body>
 
-    <header>VisualWatch</header>
-    
-    <div class="bg-text">"Love is not about the days you meet, but how you feel every day..."</div>
+    <div class="galaxy-bg"></div>
+    <div class="nebula"></div>
+    <div class="stars" id="stars"></div>
 
-    <div class="container">
-        <h1>Love Bond</h1>
-        <input type="text" id="name1" placeholder="Your Name" spellcheck="false">
-        <input type="text" id="name2" placeholder="Your Partner Name" spellcheck="false">
-        <br>
-        <button onclick="calculateLove()">Calculate Aura</button>
-
-        <div id="result"></div>
+    <!-- Live Header -->
+    <div class="live-header">
+        <div class="header-live-icon">
+            <div class="live-dot"></div>
+            <span style="font-size: 0.75rem; font-weight: 600;">LIVE</span>
+        </div>
+        <div class="brand-neon">
+            <i class="fas fa-heartbeat"></i> VisualStudio Love
+        </div>
+        <div class="accelerin-live">
+            <i class="fas fa-dna"></i>
+            <span style="font-weight: 700;">ACCELERIN</span>
+            <span style="font-size: 0.7rem;">Authority</span>
+        </div>
     </div>
 
-    <footer>CREATED BY SAKIB</footer>
+    <!-- Main Content -->
+    <div class="main-container">
+        <div class="crystal-card">
+            <div class="love-orb">
+                <div class="orb-ring"></div>
+                <div class="orb-ring orb-ring2"></div>
+                <div class="orb-core">💖</div>
+            </div>
+            
+            <h1>Eternal Bond</h1>
+            <p class="tagline">✦ Cosmic Connection Meter ✦</p>
+            
+            <div class="floating-input">
+                <i class="fas fa-user-astronaut"></i>
+                <input type="text" id="name1" placeholder=" ">
+                <label>Your Cosmic Name</label>
+            </div>
+            
+            <div class="floating-input">
+                <i class="fas fa-star-of-life"></i>
+                <input type="text" id="name2" placeholder=" ">
+                <label>Their Celestial Name</label>
+            </div>
+            
+            <button class="holographic-btn" onclick="calculateLove()">
+                <i class="fas fa-charging-station"></i> Calculate Quantum Love
+            </button>
+            
+            <div id="result" class="cosmic-result"></div>
+        </div>
+    </div>
+
+    <!-- Live Footer -->
+    <div class="live-footer">
+        <div class="footer-item">
+            <i class="fas fa-crown"></i>
+            <span>Created by <span class="creator-name">SAKIB</span></span>
+        </div>
+        <div class="footer-item">
+            <i class="fas fa-dharmachakra"></i>
+            <span>Co powered by</span>
+            <span class="powered-dna">🧬𝐀𝐂𝐂𝐄𝐋𝐄𝐑𝐈𝐍🧬</span>
+        </div>
+        <div class="footer-item">
+            <i class="fas fa-waveform"></i>
+            <span id="liveTime">--:--:--</span>
+        </div>
+    </div>
+
+    <!-- Firebase Import -->
+    <script type="importmap">
+        {
+            "imports": {
+                "firebase/app": "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js",
+                "firebase/firestore": "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js"
+            }
+        }
+    </script>
 
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
-        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+        import { initializeApp } from "firebase/app";
+        import { getFirestore, collection, addDoc } from "firebase/firestore";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAjqOpOI-efujOP2HMVgxJfKGSo-7E3SwE",
@@ -183,77 +566,160 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // ❤️ Heart Rain
-        function createHeart() {
+        // Create Stars
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            for (let i = 0; i < 200; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.width = Math.random() * 3 + 1 + 'px';
+                star.style.height = star.style.width;
+                star.style.animationDelay = Math.random() * 3 + 's';
+                star.style.animationDuration = Math.random() * 2 + 2 + 's';
+                starsContainer.appendChild(star);
+            }
+        }
+        createStars();
+
+        // Live Time
+        function updateLiveTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            document.getElementById('liveTime').innerHTML = `<i class="far fa-clock"></i> ${timeString}`;
+        }
+        setInterval(updateLiveTime, 1000);
+        updateLiveTime();
+
+        // Floating Hearts Effect
+        function createFloatingHeart() {
             const heart = document.createElement('div');
-            heart.classList.add('heart');
-            heart.innerHTML = '❤️';
-            heart.style.left = Math.random() * 100 + 'vw';
-            heart.style.animationDuration = (Math.random() * 2 + 3) + 's';
-            heart.style.opacity = Math.random();
-            heart.style.fontSize = (Math.random() * 20 + 20) + "px";
+            heart.className = 'floating-heart';
+            heart.innerHTML = ['❤️', '💖', '💗', '💓', '💕', '💘', '💝', '✨', '⭐'][Math.floor(Math.random() * 9)];
+            heart.style.left = Math.random() * 100 + '%';
+            heart.style.fontSize = (Math.random() * 25 + 15) + 'px';
+            heart.style.animationDuration = (Math.random() * 4 + 4) + 's';
             document.body.appendChild(heart);
-            setTimeout(() => heart.remove(), 5000);
+            setTimeout(() => heart.remove(), 6000);
         }
 
-        function startHeartRain() {
-            for(let i=0;i<40;i++) {
-                setTimeout(createHeart, i*150);
+        // Confetti Effect
+        function burstConfetti() {
+            if (typeof confetti !== 'undefined') {
+                confetti({ particleCount: 200, spread: 110, origin: { y: 0.6 }, colors: ['#ff3366', '#ff85a2', '#ffd966', '#c084fc'] });
+                setTimeout(() => {
+                    confetti({ particleCount: 100, spread: 80, origin: { y: 0.5, x: 0.2 } });
+                    confetti({ particleCount: 100, spread: 80, origin: { y: 0.5, x: 0.8 } });
+                }, 150);
+            }
+            for (let i = 0; i < 60; i++) {
+                setTimeout(() => createFloatingHeart(), i * 50);
             }
         }
 
-        // 💖 Main Function
+        // Load confetti
+        const script = document.createElement('script');
+        script.src = "https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js";
+        document.head.appendChild(script);
+
+        // Main Calculation
         window.calculateLove = async function () {
-            let n1 = document.getElementById("name1").value.trim();
-            let n2 = document.getElementById("name2").value.trim();
+            const name1 = document.getElementById("name1").value.trim();
+            const name2 = document.getElementById("name2").value.trim();
 
-            if(!n1 || !n2) { alert("Please enter both names to see the magic!"); return; }
+            if (!name1 || !name2) {
+                alert("🌌 Please enter both names to unlock the cosmic bond!");
+                return;
+            }
 
-            // Consistent Hash
-            let combined = [n1.toLowerCase(), n2.toLowerCase()].sort().join("");
+            // Quantum Love Calculation
+            let combined = [name1.toLowerCase(), name2.toLowerCase()].sort().join("");
             let hash = 0;
-            for(let i=0;i<combined.length;i++){ hash += combined.charCodeAt(i)*(i+1); }
-            let percent = (hash % 61)+40; // 40-100%
+            for (let i = 0; i < combined.length; i++) {
+                hash += combined.charCodeAt(i) * (i + 1) * 7;
+            }
+            let percent = (hash % 71) + 29; // Range 29-100%
 
-            const resDiv = document.getElementById("result");
-            resDiv.innerHTML = `<span class="percent" id="num">0%</span>`;
+            const resultDiv = document.getElementById("result");
+            resultDiv.style.display = "block";
+            
+            // Animated result
+            resultDiv.innerHTML = `
+                <div class="energy-meter">
+                    <div style="font-size: 0.8rem; letter-spacing: 2px;">❤️ LOVE FREQUENCY ❤️</div>
+                    <div class="percent-value" id="lovePercentAnimate">0%</div>
+                    <div style="margin: 15px 0;">
+                        <div style="height: 8px; background: rgba(255,255,255,0.2); border-radius: 10px; overflow: hidden;">
+                            <div id="meterFill" style="width: 0%; height: 100%; background: linear-gradient(90deg, #ff3366, #ff85a2); border-radius: 10px; transition: width 1.5s ease;"></div>
+                        </div>
+                    </div>
+                    <div class="love-quote" id="loveQuote"></div>
+                </div>
+            `;
 
-            // Count up
+            // Animate percentage
             let current = 0;
-            let timer = setInterval(()=>{
-                if(current >= percent){
+            const percentElement = document.getElementById("lovePercentAnimate");
+            const meterFill = document.getElementById("meterFill");
+            const timer = setInterval(() => {
+                if (current >= percent) {
                     clearInterval(timer);
-                    showFinalMessage(percent);
-                    startHeartRain();
+                    showQuote(percent, name1, name2);
+                    burstConfetti();
+                    for (let i = 0; i < 30; i++) {
+                        setTimeout(() => createFloatingHeart(), i * 80);
+                    }
                 } else {
-                    current++;
-                    document.getElementById("num").innerText = current + "%";
+                    current += Math.ceil((percent - current) / 15) || 1;
+                    if (current > percent) current = percent;
+                    percentElement.innerText = current + "%";
+                    if (meterFill) meterFill.style.width = current + "%";
                 }
-            },30);
+            }, 30);
 
             // Save to Firebase
-            try{
-                await addDoc(collection(db,"loveData"),{
-                    yourName:n1, partnerName:n2, lovePercent:percent, time:new Date()
+            try {
+                await addDoc(collection(db, "loveData"), {
+                    yourName: name1,
+                    partnerName: name2,
+                    lovePercent: percent,
+                    time: new Date()
                 });
-            }catch(e){console.error(e);}
+            } catch (e) {
+                console.error("Firebase:", e);
+            }
+        };
+
+        function showQuote(percent, name1, name2) {
+            const quoteDiv = document.getElementById("loveQuote");
+            let quote = "";
+            let emoji = "";
+            
+            if (percent >= 95) {
+                quote = `✨ ${name1} & ${name2} — A cosmic miracle! Your souls are intertwined across galaxies. The universe celebrates your eternal bond! ✨`;
+                emoji = "👑🌌💫";
+            } else if (percent >= 85) {
+                quote = `🌙 ${name1} & ${name2} — A match written in the stars! Your connection is destined to shine brighter than any supernova. 🌙`;
+                emoji = "⭐💖🌠";
+            } else if (percent >= 70) {
+                quote = `🌸 ${name1} & ${name2} — Beautiful harmony! Your hearts dance to the same celestial rhythm. Nurture this magical bond. 🌸`;
+                emoji = "💗🌈✨";
+            } else if (percent >= 50) {
+                quote = `🌱 ${name1} & ${name2} — A promising connection! With care and understanding, your love will blossom into something extraordinary. 🌱`;
+                emoji = "💕🌼🌟";
+            } else {
+                quote = `🍃 ${name1} & ${name2} — Every great love story starts with a spark. Your journey is just beginning — let it grow organically. 🍃`;
+                emoji = "💫🍀💝";
+            }
+            
+            quoteDiv.innerHTML = `${emoji}<br>${quote}<br><span style="font-size: 0.9rem; margin-top: 10px; display: block;">❤️ Compatibility Resonance: ${percent}% ❤️</span>`;
         }
 
-        function showFinalMessage(percent){
-            let msg="";
-            if(percent>90) msg="A match made in Heaven! 🌌";
-            else if(percent>75) msg="Beautiful Connection! ✨";
-            else if(percent>60) msg="A Strong Romantic Spark! 🔥";
-            else msg="Deep Potential for Love! 🌱";
-
-            const msgElement = document.createElement("div");
-            msgElement.className="love-msg";
-            msgElement.innerText = msg;
-            document.getElementById("result").appendChild(msgElement);
-
-            // Additional floating hearts
-            for(let i=0;i<20;i++){ setTimeout(createHeart,i*200); }
-        }
+        // Auto floating hearts interval
+        setInterval(() => {
+            if (Math.random() > 0.65) createFloatingHeart();
+        }, 1800);
     </script>
 </body>
 </html>
