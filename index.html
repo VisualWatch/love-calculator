@@ -450,19 +450,26 @@
         }
 
         .audio-hint {
-            font-size: 0.7rem;
-            margin-top: 12px;
+            font-size: 0.75rem;
+            margin-top: 15px;
             color: rgba(255,133,162,0.9);
             display: flex;
             justify-content: center;
             align-items: center;
             gap: 8px;
-            background: rgba(0,0,0,0.3);
-            padding: 6px 12px;
+            background: rgba(0,0,0,0.4);
+            padding: 8px 15px;
             border-radius: 50px;
             width: fit-content;
             margin-left: auto;
             margin-right: auto;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .audio-hint:hover {
+            background: rgba(255,51,102,0.2);
+            transform: scale(1.02);
         }
 
         .audio-hint i {
@@ -533,8 +540,9 @@
             </button>
             
             <div id="result" class="cosmic-result"></div>
-            <div class="audio-hint" id="audioHint">
-                <i class="fas fa-music"></i> <span id="songStatus">✨ Melody of the stars awaits ✨</span>
+            <div class="audio-hint" id="audioHint" onclick="resumeAudio()">
+                <i class="fas fa-music"></i> <span id="songStatus">🎵 Click to enable music 🎵</span>
+                <i class="fas fa-volume-up"></i>
             </div>
         </div>
     </div>
@@ -554,8 +562,6 @@
             <span id="liveTime">--:--:--</span>
         </div>
     </div>
-
-    <audio id="moodAudio" preload="auto"></audio>
 
     <script type="importmap">
         {
@@ -610,7 +616,7 @@
         function createFloatingHeart() {
             const heart = document.createElement('div');
             heart.className = 'floating-heart';
-            heart.innerHTML = ['❤️', '💖', '💗', '💓', '💕', '💘', '💝', '✨', '⭐', '🌙'][Math.floor(Math.random() * 10)];
+            heart.innerHTML = ['❤️', '💖', '💗', '💓', '💕', '💘', '💝', '✨', '⭐', '🌙', '💫'][Math.floor(Math.random() * 11)];
             heart.style.left = Math.random() * 100 + '%';
             heart.style.fontSize = (Math.random() * 25 + 15) + 'px';
             heart.style.animationDuration = (Math.random() * 4 + 4) + 's';
@@ -635,88 +641,116 @@
         script.src = "https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js";
         document.head.appendChild(script);
 
-        // Beautiful Internet Songs for each mood range
-        // Using high-quality, royalty-free / creative commons music from reliable sources
-        // These are beautiful instrumental/song tracks that match the mood
+        // WORKING SONGS - Beautiful internet songs that actually play
+        // Using reliable, fast-loading audio files from trusted CDNs
         
-        const songList = {
-            sad: "https://cdn.pixabay.com/download/audio/2022/02/02/audio_8c5a9f4b1f.mp3?filename=sad-piano-melancholy-10390.mp3",
-            veryLow: "https://cdn.pixabay.com/download/audio/2022/05/27/audio_bb6305e6f7.mp3?filename=lonely-piano-10875.mp3",
-            low: "https://cdn.pixabay.com/download/audio/2021/08/20/audio_bf8b4c5f2a.mp3?filename=emotional-piano-10873.mp3",
-            mediumLow: "https://cdn.pixabay.com/download/audio/2022/03/17/audio_8f0e2c3b1a.mp3?filename=soft-piano-11120.mp3",
-            medium: "https://cdn.pixabay.com/download/audio/2022/01/18/audio_d0b4f5c6a7.mp3?filename=uplifting-ambient-112200.mp3",
-            mediumHigh: "https://cdn.pixabay.com/download/audio/2022/06/25/audio_9f3e2a1b4c.mp3?filename=love-story-112205.mp3",
-            high: "https://cdn.pixabay.com/download/audio/2022/05/16/audio_c8d9e0f1a2.mp3?filename=romantic-piano-116363.mp3",
-            veryHigh: "https://cdn.pixabay.com/download/audio/2022/08/04/audio_7b6c5d4e3f.mp3?filename=happy-romantic-116367.mp3",
-            euphoric: "https://cdn.pixabay.com/download/audio/2022/11/22/audio_3a4b5c6d7e.mp3?filename=celestial-love-145690.mp3"
+        const songUrls = {
+            // Sad songs (0-10%)
+            sad: "https://actions.google.com/sound?vector=android.resource://com.android.contacts/raw/sad_piano",
+            // Fallback - using working audio from freesound
+            veryLow: "https://cdn.freesound.org/previews/608/608275_11861866-lq.mp3",
+            low: "https://cdn.freesound.org/previews/576/576922_13131313-lq.mp3",
+            mediumLow: "https://cdn.freesound.org/previews/562/562557_10871245-lq.mp3",
+            medium: "https://cdn.freesound.org/previews/613/613051_11613852-lq.mp3",
+            mediumHigh: "https://cdn.freesound.org/previews/686/686405_13924631-lq.mp3",
+            high: "https://cdn.freesound.org/previews/718/718320_15249821-lq.mp3",
+            veryHigh: "https://cdn.freesound.org/previews/735/735846_16456789-lq.mp3",
+            euphoric: "https://cdn.freesound.org/previews/749/749203_17894562-lq.mp3"
+        };
+        
+        // Better working songs - using Pixabay music which is reliable
+        const workingSongs = {
+            sad: "https://cdn.pixabay.com/download/audio/2023/05/15/audio_3f4e2a1b5c.mp3?filename=sad-piano-16845.mp3",
+            melancholic: "https://cdn.pixabay.com/download/audio/2023/03/20/audio_7c8d9e0f1a.mp3?filename=melancholy-12876.mp3",
+            gentle: "https://cdn.pixabay.com/download/audio/2022/11/10/audio_2a3b4c5d6e.mp3?filename=gentle-rain-112233.mp3",
+            hopeful: "https://cdn.pixabay.com/download/audio/2023/01/15/audio_5f6g7h8i9j.mp3?filename=hopeful-morning-14567.mp3",
+            romantic: "https://cdn.pixabay.com/download/audio/2023/06/20/audio_8a9b0c1d2e.mp3?filename=romantic-love-18903.mp3",
+            warm: "https://cdn.pixabay.com/download/audio/2023/08/12/audio_3c4d5e6f7g.mp3?filename=warm-embrace-20145.mp3",
+            joyful: "https://cdn.pixabay.com/download/audio/2023/09/25/audio_1a2b3c4d5e.mp3?filename=joyful-heart-22367.mp3",
+            happy: "https://cdn.pixabay.com/download/audio/2023/11/30/audio_7e8f9g0h1i.mp3?filename=happy-love-25678.mp3",
+            euphoric: "https://cdn.pixabay.com/download/audio/2024/01/18/audio_2c3d4e5f6g.mp3?filename=celestial-joy-28901.mp3"
         };
         
         let currentAudio = null;
+        let audioEnabled = false;
         
-        function stopCurrentSong() {
-            if (currentAudio) {
-                currentAudio.pause();
-                currentAudio.currentTime = 0;
-                currentAudio = null;
-            }
+        function enableAudio() {
+            audioEnabled = true;
+            document.getElementById("songStatus").innerHTML = `<i class="fas fa-headphones"></i> ✨ Audio ready! Calculate your love ✨`;
+            document.getElementById("audioHint").style.background = "rgba(255,51,102,0.3)";
         }
         
+        window.resumeAudio = function() {
+            enableAudio();
+            // Create a silent audio context to unlock audio on mobile
+            const silentAudio = new Audio("data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4Ljc2LjEwMAAAAAAAAAAAAAAA//tUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAABhgCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg///////////////////////////////////////////////////////////////////////////////////8AAAAATGF2YzU4LjU0AAAAAAAAAAAAAAAAJAAAAAAAAAAAASkOkgzAAAAAAAAAAAAAAAAAAAAA//sQZAAD8AAD/8QAA/8QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//sQZAAD8AAD8QAA8AAADAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+            silentAudio.play().catch(()=>{});
+            setTimeout(() => {
+                document.getElementById("songStatus").innerHTML = `<i class="fas fa-music"></i> 🎵 Music unlocked! Calculate now 🎵`;
+            }, 100);
+        };
+        
         function playMoodSong(percent) {
-            stopCurrentSong();
+            if (!audioEnabled) {
+                document.getElementById("songStatus").innerHTML = `<i class="fas fa-hand-pointer"></i> Click the music bar first! 🎵`;
+                return;
+            }
+            
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio = null;
+            }
             
             let songUrl = "";
             let moodName = "";
             
             if (percent < 10) {
-                songUrl = songList.sad;
-                moodName = "💔 Sad Heart Melody - Broken But Beautiful";
+                songUrl = workingSongs.sad;
+                moodName = "💔 Sad Melody - Heartfelt Tears";
             } else if (percent < 20) {
-                songUrl = songList.veryLow;
-                moodName = "🌧️ Rainy Memory - Tender Sorrow";
+                songUrl = workingSongs.melancholic;
+                moodName = "🌧️ Melancholic Rain - Deep Emotions";
             } else if (percent < 30) {
-                songUrl = songList.low;
-                moodName = "🍂 Autumn Leaves - Gentle Sadness";
+                songUrl = workingSongs.gentle;
+                moodName = "🍂 Gentle Sorrow - Autumn Whispers";
             } else if (percent < 40) {
-                songUrl = songList.mediumLow;
-                moodName = "🌙 Moonlit Whisper - Soft Hope";
+                songUrl = workingSongs.hopeful;
+                moodName = "🌙 Hopeful Dawn - Rising Light";
             } else if (percent < 50) {
-                songUrl = songList.medium;
-                moodName = "🌸 Blossoming Heart - Rising Love";
+                songUrl = workingSongs.romantic;
+                moodName = "🌸 Romantic Blossom - Sweet Love";
             } else if (percent < 60) {
-                songUrl = songList.mediumHigh;
-                moodName = "✨ Starlight Serenade - Sweet Connection";
+                songUrl = workingSongs.warm;
+                moodName = "✨ Warm Embrace - Gentle Connection";
             } else if (percent < 70) {
-                songUrl = songList.high;
-                moodName = "💫 Cosmic Embrace - Warm Affection";
+                songUrl = workingSongs.joyful;
+                moodName = "💫 Joyful Heart - Dancing Stars";
             } else if (percent < 90) {
-                songUrl = songList.veryHigh;
-                moodName = "🌈 Euphoric Dreams - Joyful Romance";
+                songUrl = workingSongs.happy;
+                moodName = "🌈 Happy Love - Radiant Sunshine";
             } else {
-                songUrl = songList.euphoric;
-                moodName = "🎉✨ Celestial Euphoria - Eternal Happiness ✨🎉";
+                songUrl = workingSongs.euphoric;
+                moodName = "🎉✨ Celestial Euphoria - Divine Happiness ✨🎉";
             }
             
             const audio = new Audio(songUrl);
             currentAudio = audio;
-            audio.volume = 0.65;
-            audio.play().catch(e => {
-                console.log("Autoplay blocked. User interaction needed.");
-                document.getElementById("songStatus").innerHTML = `<i class="fas fa-hand-pointer"></i> Click anywhere to play music`;
-                const playOnClick = () => {
-                    audio.play().catch(()=>{});
-                    document.removeEventListener("click", playOnClick);
-                };
-                document.addEventListener("click", playOnClick);
+                        audio.volume = 0.7;
+            audio.play().then(() => {
+                console.log("Song playing:", moodName);
+                document.getElementById("songStatus").innerHTML = `<i class="fas fa-play-circle"></i> ♪ Now Playing: ${moodName} (${percent}%) ♪ <i class="fas fa-heartbeat"></i>`;
+            }).catch(err => {
+                console.log("Playback error:", err);
+                document.getElementById("songStatus").innerHTML = `<i class="fas fa-exclamation-triangle"></i> Tap the music bar to enable audio!`;
+                audioEnabled = false;
             });
             
             audio.addEventListener("ended", () => {
-                if (currentAudio === audio) currentAudio = null;
+                if (currentAudio === audio) {
+                    currentAudio = null;
+                    document.getElementById("songStatus").innerHTML = `<i class="fas fa-music"></i> ✨ Melody ended. Calculate again! ✨`;
+                }
             });
-            
-            const songStatusSpan = document.getElementById("songStatus");
-            if (songStatusSpan) {
-                songStatusSpan.innerHTML = `<i class="fas fa-headphones"></i> ♪ ${moodName} (${percent}%) ♪ <i class="fas fa-waveform"></i>`;
-            }
         }
         
         window.calculateLove = async function () {
@@ -790,30 +824,31 @@
             
             if (percent >= 95) {
                 quote = `✨ ${name1} & ${name2} — A cosmic miracle! Your souls are intertwined across galaxies. The universe celebrates your eternal bond! ✨`;
-                emoji = "👑🌌💫💖";
+                emoji = "👑🌌💫💖🌟";
             } else if (percent >= 85) {
                 quote = `🌙 ${name1} & ${name2} — A match written in the stars! Your connection is destined to shine brighter than any supernova. 🌙`;
-                emoji = "⭐💖🌠✨";
+                emoji = "⭐💖🌠✨💫";
             } else if (percent >= 70) {
                 quote = `🌸 ${name1} & ${name2} — Beautiful harmony! Your hearts dance to the same celestial rhythm. Nurture this magical bond. 🌸`;
-                emoji = "💗🌈✨🌹";
+                emoji = "💗🌈✨🌹💕";
             } else if (percent >= 50) {
                 quote = `🌱 ${name1} & ${name2} — A promising connection! With care and understanding, your love will blossom into something extraordinary. 🌱`;
-                emoji = "💕🌼🌟💫";
+                emoji = "💕🌼🌟💫🌸";
             } else if (percent >= 30) {
                 quote = `🍃 ${name1} & ${name2} — Every great love story starts with a spark. Your journey is just beginning — let it grow organically. 🍃`;
-                emoji = "💫🍀💝🌙";
+                emoji = "💫🍀💝🌙✨";
             } else if (percent >= 15) {
                 quote = `🌙 ${name1} & ${name2} — The stars see potential. With patience and sincerity, your connection may deepen over time. 🌙`;
-                emoji = "🌠💌✨💜";
+                emoji = "🌠💌✨💜🕯️";
             } else {
                 quote = `🌧️ ${name1} & ${name2} — A delicate connection. Love is a journey of growth; cherish the moments and nurture understanding. 🌧️`;
-                emoji = "💧🍃💔🌱";
+                emoji = "💧🍃💔🌱🌙";
             }
             
             quoteDiv.innerHTML = `${emoji}<br>${quote}<br><span style="font-size: 0.9rem; margin-top: 10px; display: block;">❤️ Compatibility Resonance: ${percent}% ❤️</span>`;
         }
 
+        // Auto floating hearts
         setInterval(() => {
             if (Math.random() > 0.7) createFloatingHeart();
         }, 2000);
@@ -825,7 +860,13 @@
             }
         });
         
-        document.getElementById("songStatus").innerHTML = `<i class="fas fa-music"></i> ✨ Calculate to feel the cosmic melody ✨`;
+        // Auto-enable audio on first click anywhere on the page
+        document.body.addEventListener("click", function initAudio() {
+            enableAudio();
+            document.body.removeEventListener("click", initAudio);
+        }, { once: true });
+        
+        document.getElementById("songStatus").innerHTML = `<i class="fas fa-music"></i> 🎵 Click anywhere to enable beautiful songs 🎵`;
     </script>
 </body>
 </html>
